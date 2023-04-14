@@ -71,9 +71,33 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovment = function (movements) {
+// const displayMovment = function (movements, sort = false, sortCount = 0) {
+// containerMovements.innerHTML = '';
+// const movs =
+// sort?.sortCount == 0
+// ? movements.slice().sort((a, b) => a - b)
+// : sort?.sortCount == 1
+// ? movements.slice().sort((a, b) => b - a)
+// : movements;
+containerMovements.innerHTML = '';
+// movs.forEach(function (move, i) {
+// const type = move > 0 ? 'deposit' : 'withdrawal';
+//
+// const html = `
+// <div class="movements__row">
+// <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+//
+// <div class="movements__value">${move} €</div>
+// </div>`;
+// containerMovements.insertAdjacentHTML('afterbegin', html);
+// });
+// };
+
+const displayMovment = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function (move, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  // containerMovements.innerHTML = '';
+  movs.forEach(function (move, i) {
     const type = move > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -222,6 +246,42 @@ btnLoan.addEventListener('click', function (e) {
     UpdateUI(currentAccount);
   }
   inputLoanAmount.value = '';
+});
+
+// sort button
+// const sorted = false;
+//
+// btnSort.addEventListener('click', function (e) {
+// e.preventDefault();
+// if (sorted == 0) {
+// currentAccount.movements.sort((a, b) => a - b);
+//
+// UpdateUI(currentAccount);
+// sorted = 1;
+// } else {
+// UpdateUI(currentAccount);
+// }
+// });
+
+// let sort = false;
+// let sortCount = 0;
+// btnSort.addEventListener('click', function (e) {
+// e.preventDefault();
+// sortCount = Number(sortCount);
+//
+// displayMovment(currentAccount.movements, !sort, sortCount);
+// sortCount++;
+// sortCount = sortCount % 3;
+// sortCount == 2 ? (sort = !sort) : sort;
+// });
+//
+let sort = false;
+
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  displayMovment(currentAccount.movements, !sort);
+  sort = !sort;
 });
 
 /////////////////////////////////////////////////
