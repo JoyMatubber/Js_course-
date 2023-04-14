@@ -227,3 +227,22 @@ btnLoan.addEventListener('click', function (e) {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
+// flat and flatmap
+
+const allMovsrr = accounts.map(acc => acc.movements);
+
+const allmov = allMovsrr.flat();
+console.log(allmov);
+const allMovSum = allmov.reduce((acc, mov) => acc + mov, 0);
+console.log(allMovSum);
+// chaining
+const allInOne = accounts
+  .map(acc => acc.movements)
+  .flat(1)
+  .reduce((sum, cur) => sum + cur, 0);
+console.log(allInOne);
+
+const allInOne1 = accounts
+  .flatMap(acc => acc.movements) // instand of use map and flat we uise flatMap
+  .reduce((sum, cur) => sum + cur, 0);
+console.log(allInOne1);
