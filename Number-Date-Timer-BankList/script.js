@@ -110,17 +110,24 @@ containerMovements.innerHTML = '';
 // });
 // };
 
-const displayMovment = function (movements, sort = false) {
+const displayMovment = function (acc, sort = false) {
   containerMovements.innerHTML = '';
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
   // containerMovements.innerHTML = '';
   movs.forEach(function (move, i) {
     const type = move > 0 ? 'deposit' : 'withdrawal';
+    const Nowdate = new Date(acc.movementsDates[i]);
+    const year = Nowdate.getFullYear();
+    const month = `${Nowdate.getMonth()}`.padStart(2, 0);
+    const day = `${Nowdate.getDate()}`.padStart(2, 0);
+    const displayDate = `${day}/${month}/${year}`;
 
     const html = `
     <div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    
+    <div class="movements__date">${displayDate}</div>
     <div class="movements__value">${move} €</div>
   </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -145,7 +152,7 @@ const createUserName = function (account) {
 createUserName(accounts);
 
 const UpdateUI = function (acc) {
-  displayMovment(acc.movements); // display Movment
+  displayMovment(acc); // display Movment
   balanceDisplay(acc); // display login account balance
   displaySummery(acc); // display in
 };
@@ -159,6 +166,16 @@ const UpdateUI = function (acc) {
 //   labelBalance.textContent = `${balance} ERO`;
 // };
 // use arrow function
+const DisplayDate = function () {
+  const Nowdate = new Date();
+  const year = Nowdate.getFullYear();
+  const month = `${Nowdate.getMonth()}`.padStart(2, 0);
+  const day = `${Nowdate.getDate()}`.padStart(2, 0);
+  const hr = `${Nowdate.getHours()}`.padStart(2, 0);
+  const min = `${Nowdate.getMinutes()}`.padStart(2, 0);
+  labelDate.textContent = `${day}/${month}/${year}, ${hr}:${min}`;
+};
+
 const balanceDisplay = function (acc) {
   console.log('ok');
   acc.balance = acc.movements.reduce((sum, cur) => sum + cur, 0);
@@ -209,6 +226,7 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputClosePin.blur();
     UpdateUI(currentAccount);
+    DisplayDate();
     // displayMovment(currentAccount.movements); // display Movment
     // balanceDisplay(currentAccount); // display login account balance
     // displaySummery(currentAccount); // display in out intrese all value
@@ -233,8 +251,13 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movements.push(-amount);
     recevAccount.movements.push(amount);
 
+    // adding date
+    currentAccount.movementsDates.push(new Date());
+    recevAccount.movementsDates.push(new Date());
+
     // update UI
     UpdateUI(currentAccount);
+    DisplayDate();
   }
   inputTransferTo.value = inputTransferAmount.value = '';
 });
@@ -263,7 +286,10 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     currentAccount.movements.push(amount);
+    currentAccount.movementsDates.push(new Date());
+
     UpdateUI(currentAccount);
+    DisplayDate();
   }
   inputLoanAmount.value = '';
 });
