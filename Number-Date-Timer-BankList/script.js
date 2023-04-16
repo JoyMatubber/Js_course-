@@ -21,7 +21,7 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
+    '2020-07-27T17:01:17.194Z',
     '2020-07-11T23:36:17.929Z',
     '2020-07-12T10:51:36.790Z',
   ],
@@ -43,7 +43,7 @@ const account2 = {
     '2020-02-05T16:33:06.386Z',
     '2020-04-10T14:43:26.374Z',
     '2020-06-25T18:49:59.371Z',
-    '2020-07-26T12:01:20.894Z',
+    '2020-06-26T12:01:20.894Z',
   ],
   currency: 'USD',
   locale: 'en-US',
@@ -110,6 +110,58 @@ containerMovements.innerHTML = '';
 // });
 // };
 
+const formatMovementDate = function (date) {
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  console.log(daysPassed);
+
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+  else {
+    const year = ` ${date.getFullYear()}`;
+    const month = `${date.getMonth()}`.padStart(2, 0);
+    const day = `${date.getDate()}`.padStart(2, 0);
+    return `${day}/${month}/${year}`;
+  }
+
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+  // return new Intl.DateTimeFormat(locale).format(date);
+};
+
+const currentDate = function () {
+  const Nowdate = new Date();
+  const year = ` ${Nowdate.getFullYear()}`;
+  const month = `${Nowdate.getMonth()}`.padStart(2, 0);
+  const day = `${Nowdate.getDate()}`.padStart(2, 0);
+  const hr = `${Nowdate.getHours()}`.padStart(2, 0);
+  const min = `${Nowdate.getMinutes()}`.padStart(2, 0);
+  labelDate.textContent = `${day}/${month}/${year}, ${hr}:${min}`;
+};
+
+// const DisplayDate = function (Nowdate) {
+// const Nowdate = new Date();
+//
+// const caldatePassed = (date1, date2) =>
+// Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+// let datePassed = caldatePassed(new Date(), Nowdate);
+//
+// if (datePassed === 0) return 'Today';
+// if (datePassed === 0) return 'Yesterday';
+// if (datePassed <= 7) return `${datePassed} days ago`;
+// else {
+// const year = ` ${Nowdate.getFullYear()}`;
+// const month = `${Nowdate.getMonth()}`.padStart(2, 0);
+// const day = `${Nowdate.getDate()}`.padStart(2, 0);
+// return `${day}/${month}/${year}`;
+// }
+// };
+//
 const displayMovment = function (acc, sort = false) {
   containerMovements.innerHTML = '';
   const movs = sort
@@ -118,11 +170,13 @@ const displayMovment = function (acc, sort = false) {
   // containerMovements.innerHTML = '';
   movs.forEach(function (move, i) {
     const type = move > 0 ? 'deposit' : 'withdrawal';
-    const Nowdate = new Date(acc.movementsDates[i]);
-    const year = Nowdate.getFullYear();
-    const month = `${Nowdate.getMonth()}`.padStart(2, 0);
-    const day = `${Nowdate.getDate()}`.padStart(2, 0);
-    const displayDate = `${day}/${month}/${year}`;
+    // const Nowdate = new Date(acc.movementsDates[i]);
+    // const year = Nowdate.getFullYear();
+    // const month = `${Nowdate.getMonth()}`.padStart(2, 0);
+    // const day = `${Nowdate.getDate()}`.padStart(2, 0);
+
+    const date = new Date(acc.movementsDates[i]);
+    const displayDate = formatMovementDate(date);
 
     const html = `
     <div class="movements__row">
@@ -166,15 +220,6 @@ const UpdateUI = function (acc) {
 //   labelBalance.textContent = `${balance} ERO`;
 // };
 // use arrow function
-const DisplayDate = function () {
-  const Nowdate = new Date();
-  const year = Nowdate.getFullYear();
-  const month = `${Nowdate.getMonth()}`.padStart(2, 0);
-  const day = `${Nowdate.getDate()}`.padStart(2, 0);
-  const hr = `${Nowdate.getHours()}`.padStart(2, 0);
-  const min = `${Nowdate.getMinutes()}`.padStart(2, 0);
-  labelDate.textContent = `${day}/${month}/${year}, ${hr}:${min}`;
-};
 
 const balanceDisplay = function (acc) {
   console.log('ok');
@@ -226,7 +271,7 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputClosePin.blur();
     UpdateUI(currentAccount);
-    DisplayDate();
+    currentDate();
     // displayMovment(currentAccount.movements); // display Movment
     // balanceDisplay(currentAccount); // display login account balance
     // displaySummery(currentAccount); // display in out intrese all value
@@ -289,7 +334,7 @@ btnLoan.addEventListener('click', function (e) {
     currentAccount.movementsDates.push(new Date());
 
     UpdateUI(currentAccount);
-    DisplayDate();
+    currentDate();
   }
   inputLoanAmount.value = '';
 });
